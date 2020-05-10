@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Gaussian/Gaussian.cpp \
+        Gaussian/Matrix.cpp \
         QuickHull/QuickHull.cpp \
         QuickHull/Structures.cpp \
         main.cpp \
@@ -32,6 +34,7 @@ SOURCES += \
         mathutils.cpp
 
 HEADERS += \
+        Gaussian/Matrix.h \
         QuickHull/Structures.h \
         mainwindow.h \
         mathutils.h

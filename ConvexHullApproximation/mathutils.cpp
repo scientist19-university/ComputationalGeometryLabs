@@ -1,7 +1,9 @@
 #include "mathutils.h"
 
 #include "QuickHull/QuickHull.cpp"
+#include "Gaussian/Gaussian.cpp"
 
+#include <cmath>
 
 std::vector<QPoint> convexHull(const std::vector<QPoint> &i_points)
 {
@@ -17,4 +19,16 @@ std::vector<QPoint> convexHull(const std::vector<QPoint> &i_points)
     }
 
     return result;
+}
+
+std::vector<double> solveSystem(const Matrix &i_matrix)
+{
+    auto sln = solve(i_matrix);
+    return sln.first;
+}
+
+QPoint buildBezierCurve(QPoint i_p0, QPoint i_p1, QPoint i_p2, QPoint i_p3, double i_t)
+{
+    QPoint res = pow((1 - i_t), 3)*i_p0 + 3*pow((1-i_t), 2)*i_t*i_p1 + 3*(1-i_t)*pow(i_t,2)*i_p2 + pow(i_t, 3)*i_p3;
+    return res;
 }
