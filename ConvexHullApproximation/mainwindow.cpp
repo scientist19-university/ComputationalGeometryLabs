@@ -72,9 +72,11 @@ void MainWindow::placeRandomPoints()
 {
     int number = 10;
 
+    removeEdges();
+    removeSpline();
+    mp_scene->clear();
     m_points.clear();
     m_ch_points.clear();
-    mp_scene->clear();
 
     auto view_rect = ui->graphicsView->rect();
     int view_width = view_rect.width() - 10,
@@ -117,6 +119,9 @@ void MainWindow::buildSpline()
 {
     removeSpline();
     std::vector<double> q_x, q_y;
+
+    if (m_ch_points.empty())
+        return;
 
     m_ch_points.push_back(m_ch_points[0]);
     m_ch_points.push_back(m_ch_points[1]);

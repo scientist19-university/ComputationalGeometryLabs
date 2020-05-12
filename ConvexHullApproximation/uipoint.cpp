@@ -4,9 +4,6 @@
 #include <QPen>
 #include <QGraphicsSceneMouseEvent>
 
-#include <QDrag>
-#include <QString>
-
 
 UIPoint::UIPoint(int i_x, int i_y) :
     QGraphicsEllipseItem (0, 0, 5, 5)
