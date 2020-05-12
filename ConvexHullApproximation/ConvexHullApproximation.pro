@@ -31,13 +31,15 @@ SOURCES += \
         QuickHull/Structures.cpp \
         main.cpp \
         mainwindow.cpp \
-        mathutils.cpp
+        mathutils.cpp \
+        uipoint.cpp
 
 HEADERS += \
         Gaussian/Matrix.h \
         QuickHull/Structures.h \
         mainwindow.h \
-        mathutils.h
+        mathutils.h \
+        uipoint.h
 
 FORMS += \
         mainwindow.ui

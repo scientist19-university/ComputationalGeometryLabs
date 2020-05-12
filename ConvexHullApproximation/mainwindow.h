@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
@@ -22,15 +23,23 @@ private slots:
     void buildSpline();
 
 private:
+    void removeEdges();
+    void removeSpline();
+
+private:
     Ui::MainWindow *ui;
     QGraphicsScene* mp_scene;
 
-    std::vector<QPoint> m_points;
-    std::vector<QPoint> m_ch_points; // points in convex hull
+    std::vector<QPointF> m_points;
+    std::vector<QPointF> m_ch_points; // points in convex hull
 
     //control points for Bezier spline
-    std::vector<QPoint> m_A;
-    std::vector<QPoint> m_B;
+    std::vector<QPointF> m_A;
+    std::vector<QPointF> m_B;
+
+    // scene items
+    std::vector<std::unique_ptr<QGraphicsItem>> m_edges;
+    std::vector<std::unique_ptr<QGraphicsItem>> m_bezier_spline;
 };
 
 #endif // MAINWINDOW_H

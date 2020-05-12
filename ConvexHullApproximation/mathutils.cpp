@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-std::vector<QPoint> convexHull(const std::vector<QPoint> &i_points)
+std::vector<QPointF> convexHull(const std::vector<QPointF> &i_points)
 {
     std::vector<Point> points;
     for (int i = 0; i < i_points.size(); i++)
@@ -13,7 +13,7 @@ std::vector<QPoint> convexHull(const std::vector<QPoint> &i_points)
 
     auto sections = quickHull(points);
 
-    std::vector<QPoint> result;
+    std::vector<QPointF> result;
     for (int i = 0; i < sections.size(); i++){
         result.push_back(QPoint(sections[i].m_point1.m_x, sections[i].m_point1.m_y));
     }
@@ -27,8 +27,8 @@ std::vector<double> solveSystem(const Matrix &i_matrix)
     return sln.first;
 }
 
-QPoint buildBezierCurve(QPoint i_p0, QPoint i_p1, QPoint i_p2, QPoint i_p3, double i_t)
+QPointF buildBezierCurve(QPointF i_p0, QPointF i_p1, QPointF i_p2, QPointF i_p3, double i_t)
 {
-    QPoint res = pow((1 - i_t), 3)*i_p0 + 3*pow((1-i_t), 2)*i_t*i_p1 + 3*(1-i_t)*pow(i_t,2)*i_p2 + pow(i_t, 3)*i_p3;
+    QPointF res = pow((1 - i_t), 3)*i_p0 + 3*pow((1-i_t), 2)*i_t*i_p1 + 3*(1-i_t)*pow(i_t,2)*i_p2 + pow(i_t, 3)*i_p3;
     return res;
 }
