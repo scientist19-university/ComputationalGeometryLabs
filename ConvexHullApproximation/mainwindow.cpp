@@ -102,6 +102,10 @@ void MainWindow::findConvexHull()
 void MainWindow::buildSpline()
 {
     std::vector<double> q_x, q_y;
+
+    m_ch_points.push_back(m_ch_points[0]);
+    m_ch_points.push_back(m_ch_points[1]);
+
     for (size_t i = 0; i < m_ch_points.size(); i++){
         q_x.push_back(m_ch_points[i].x());
         q_y.push_back(m_ch_points[i].y());
@@ -118,10 +122,14 @@ void MainWindow::buildSpline()
     }
 
 
-    for (size_t i = 0; i < m_A.size(); i++){
+    for (size_t i =1; i < m_A.size(); i++){
+
         for(double t = 0; t <= 1; t += 0.005){
             QPoint p = buildBezierCurve(m_ch_points[i], m_A[i], m_B[i], m_ch_points[i+1], t);
             mp_scene->addEllipse(p.x()-1, p.y()-1, 2, 2, QPen(Qt::blue), QBrush(Qt::SolidPattern));
         }
     }
+
+    m_ch_points.erase(m_ch_points.end() - 1);
+    m_ch_points.erase(m_ch_points.end() - 1);
 }
