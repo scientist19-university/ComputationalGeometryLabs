@@ -28,11 +28,12 @@ private slots:
     //void placePointsForBezierSurface();
     //void buildBezierSurface();
 
+    void removeAll();
+
 private:
     void removeConvexHullEdges();
     void removeBezierSpline();
     void removeHermitSpline();
-    void removeAll();
     void redraw();
     void placePoints(const std::vector<QPointF>& i_points);
 

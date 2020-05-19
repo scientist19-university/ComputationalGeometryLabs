@@ -64,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->placePointsButton, &QPushButton::clicked, this, &MainWindow::placePointsForHermitSpline);
     connect(ui->buildHermiteSplineButton, &QPushButton::clicked, this, &MainWindow::drawHermitSpline);
+
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::removeAll);
 }
 
 MainWindow::~MainWindow()
