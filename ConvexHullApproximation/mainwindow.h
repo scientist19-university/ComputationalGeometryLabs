@@ -1,9 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <memory>
+
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include <memory>
+#include <QVector3D>
+#include <Qt3DWindow>
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +27,9 @@ private slots:
 
     void placePointsForHermitSpline();
     void drawHermitSpline();
-    //
-    //void placePointsForBezierSurface();
-    //void buildBezierSurface();
+
+    void placePointsForBezierSurface();
+    void drawBezierSurface();
 
     void removeAll();
 
@@ -37,9 +40,16 @@ private:
     void redraw();
     void placePoints(const std::vector<QPointF>& i_points);
 
+    void setup3DScene();
+
+    void addPointTo3DScene(QVector3D i_point, double i_radius, QColor i_color, bool i_low_quality);
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene* mp_scene;
+
+    Qt3DExtras::Qt3DWindow *mp_3dview;
+    Qt3DCore::QEntity *mp_root_entity;
 
     std::vector<QPointF> m_points;
     std::vector<QPointF> m_ch_points; // points in convex hull
@@ -53,7 +63,9 @@ private:
     std::vector<std::unique_ptr<QGraphicsItem>> m_bezier_spline;
     std::vector<std::unique_ptr<QGraphicsItem>> m_hermit_spline;
 
-    std::vector<QPointF> m_points_for_Hermit_spline = {{100, 100}, {200, 200}, {400, 200}, {500, 300}, {600, 100}, {700, 200}, {800, 400}, {900, 400}, {1000, 300}};
+
+    std::vector<QPointF> m_points_for_Hermit_spline;
+    std::vector<std::vector<QVector3D>> m_points_for_Bezier_surface;
 };
 
 #endif // MAINWINDOW_H
