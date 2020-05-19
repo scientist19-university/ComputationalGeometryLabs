@@ -19,8 +19,8 @@ public:
 
 private slots:
     void placeRandomPoints();
-    void findConvexHull();
-    void buildSpline();
+    void drawConvexHull();
+    void drawBezierSpline();
 
     void placePointsForHermitSpline();
     void drawHermitSpline();
@@ -29,8 +29,8 @@ private slots:
     //void buildBezierSurface();
 
 private:
-    void removeEdges();
-    void removeSpline();
+    void removeConvexHullEdges();
+    void removeBezierSpline();
     void removeHermitSpline();
     void removeAll();
     void redraw();

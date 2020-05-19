@@ -59,8 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(mp_scene);
 
     connect(ui->randomButton, &QPushButton::clicked, this, &MainWindow::placeRandomPoints);
-    connect(ui->ConvexHullButton, &QPushButton::clicked, this, &MainWindow::findConvexHull);
-    connect(ui->approxButton, &QPushButton::clicked, this, &MainWindow::buildSpline);
+    connect(ui->ConvexHullButton, &QPushButton::clicked, this, &MainWindow::drawConvexHull);
+    connect(ui->approxButton, &QPushButton::clicked, this, &MainWindow::drawBezierSpline);
 
     connect(ui->placePointsButton, &QPushButton::clicked, this, &MainWindow::placePointsForHermitSpline);
     connect(ui->buildHermiteSplineButton, &QPushButton::clicked, this, &MainWindow::drawHermitSpline);
@@ -76,22 +76,22 @@ void MainWindow::placeRandomPoints()
     int number = 10;
 
     auto view_rect = ui->graphicsView->rect();
-    int view_width = view_rect.width() - 10,
-        view_height = view_rect.height() - 10;
+    int view_width = view_rect.width()*3/4,
+        view_height = view_rect.height()*3/4;
 
     std::vector<QPointF> points;
     for (int i = 0; i < number; i++){
-        QPoint point = QPoint(rand() % view_width - view_width/2,
-                              rand() % view_height - view_height/2);
+        QPoint point = QPoint(rand() % view_width + view_width*1/8,
+                              rand() % view_height + view_height*1/8);
         points.push_back(point);
     }
 
     placePoints(points);
 }
 
-void MainWindow::findConvexHull()
+void MainWindow::drawConvexHull()
 {
-    removeEdges();
+    removeConvexHullEdges();
     m_ch_points = convexHull(m_points);
 
     QPen pen = QPen(Qt::red);
@@ -105,9 +105,9 @@ void MainWindow::findConvexHull()
     m_edges.push_back(std::unique_ptr<QGraphicsItem>(line));
 }
 
-void MainWindow::buildSpline()
+void MainWindow::drawBezierSpline()
 {
-    removeSpline();
+    removeBezierSpline();
     std::vector<double> q_x, q_y;
 
     if (m_ch_points.empty())
@@ -171,14 +171,14 @@ void MainWindow::drawHermitSpline()
 }
 
 
-void MainWindow::removeEdges()
+void MainWindow::removeConvexHullEdges()
 {
     for (auto& p_item : m_edges)
         mp_scene->removeItem(p_item.get());
     m_edges.clear();
 }
 
-void MainWindow::removeSpline()
+void MainWindow::removeBezierSpline()
 {
     for (auto& p_item : m_bezier_spline)
         mp_scene->removeItem(p_item.get());
@@ -194,8 +194,8 @@ void MainWindow::removeHermitSpline()
 
 void MainWindow::removeAll()
 {
-    removeEdges();
-    removeSpline();
+    removeConvexHullEdges();
+    removeBezierSpline();
     removeHermitSpline();
     mp_scene->clear();
     m_points.clear();
@@ -205,8 +205,8 @@ void MainWindow::removeAll()
 void MainWindow::redraw()
 {
     if (ui->tabWidget->currentWidget() == ui->bezier_approx_tab){
-        findConvexHull();
-        buildSpline();
+        drawConvexHull();
+        drawBezierSpline();
     }
     else if (ui->tabWidget->currentWidget() == ui->hermite_spline_tab){
         drawHermitSpline();
