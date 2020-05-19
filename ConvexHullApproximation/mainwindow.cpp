@@ -61,6 +61,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->randomButton, &QPushButton::clicked, this, &MainWindow::placeRandomPoints);
     connect(ui->ConvexHullButton, &QPushButton::clicked, this, &MainWindow::findConvexHull);
     connect(ui->approxButton, &QPushButton::clicked, this, &MainWindow::buildSpline);
+
+    connect(ui->placePointsButton, &QPushButton::clicked, this, &MainWindow::placePointsForHermitSpline);
+    connect(ui->buildHermiteSplineButton, &QPushButton::clicked, this, &MainWindow::drawHermitSpline);
 }
 
 MainWindow::~MainWindow()
@@ -72,31 +75,18 @@ void MainWindow::placeRandomPoints()
 {
     int number = 10;
 
-    removeEdges();
-    removeSpline();
-    mp_scene->clear();
-    m_points.clear();
-    m_ch_points.clear();
-
     auto view_rect = ui->graphicsView->rect();
     int view_width = view_rect.width() - 10,
         view_height = view_rect.height() - 10;
 
+    std::vector<QPointF> points;
     for (int i = 0; i < number; i++){
         QPoint point = QPoint(rand() % view_width - view_width/2,
                               rand() % view_height - view_height/2);
-        m_points.push_back(point);
-
-        auto* item = new UIPoint(point.x(), point.y());
-        mp_scene->addItem(item);
-
-        connect(item, &UIPoint::positionChanged, [this, i](QPointF i_new_point){
-            m_points[i] = i_new_point + QPointF(2, 2);
-
-            this->findConvexHull();
-            this->buildSpline();
-        });
+        points.push_back(point);
     }
+
+    placePoints(points);
 }
 
 void MainWindow::findConvexHull()
@@ -155,6 +145,32 @@ void MainWindow::buildSpline()
     m_ch_points.erase(m_ch_points.end() - 1);
 }
 
+void MainWindow::placePointsForHermitSpline()
+{
+    placePoints(m_points_for_Hermit_spline);
+}
+
+void MainWindow::drawHermitSpline()
+{
+    removeHermitSpline();
+
+    std::vector<double> derivatives = findDerivatives(m_points);
+    for (size_t i = 0; i < m_points.size() - 1; i++){
+        QPointF a = m_points[i],
+                b = m_points[i+1];
+
+        double length = b.x() - a.x();
+        for (double x = a.x(); x <= b.x(); x += 0.001*(length)){
+            double y = buildHermitSpline(a, b, derivatives[i], derivatives[i+1], x);
+
+            QPointF p(x, y);
+            auto* point = mp_scene->addEllipse(p.x()-1, p.y()-1, 2, 2, QPen(QColor("#00b300")), QBrush(Qt::SolidPattern));
+            m_hermit_spline.push_back(std::unique_ptr<QGraphicsItem>(point));
+        }
+    }
+}
+
+
 void MainWindow::removeEdges()
 {
     for (auto& p_item : m_edges)
@@ -167,4 +183,51 @@ void MainWindow::removeSpline()
     for (auto& p_item : m_bezier_spline)
         mp_scene->removeItem(p_item.get());
     m_bezier_spline.clear();
+}
+
+void MainWindow::removeHermitSpline()
+{
+    for (auto& p_item : m_hermit_spline)
+        mp_scene->removeItem(p_item.get());
+    m_hermit_spline.clear();
+}
+
+void MainWindow::removeAll()
+{
+    removeEdges();
+    removeSpline();
+    removeHermitSpline();
+    mp_scene->clear();
+    m_points.clear();
+    m_ch_points.clear();
+}
+
+void MainWindow::redraw()
+{
+    if (ui->tabWidget->currentWidget() == ui->bezier_approx_tab){
+        findConvexHull();
+        buildSpline();
+    }
+    else if (ui->tabWidget->currentWidget() == ui->hermite_spline_tab){
+        drawHermitSpline();
+    }
+}
+
+void MainWindow::placePoints(const std::vector<QPointF> &i_points)
+{
+    removeAll();
+
+    for (size_t i = 0; i < i_points.size(); i++){
+
+        QPointF point = i_points[i];
+        m_points.push_back(point);
+
+        auto* item = new UIPoint(point.x(), point.y());
+        mp_scene->addItem(item);
+
+        connect(item, &UIPoint::positionChanged, [this, i](QPointF i_new_point){
+            m_points[i] = i_new_point + QPointF(2, 2);
+            redraw();
+        });
+    }
 }

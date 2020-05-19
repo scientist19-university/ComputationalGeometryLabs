@@ -22,9 +22,19 @@ private slots:
     void findConvexHull();
     void buildSpline();
 
+    void placePointsForHermitSpline();
+    void drawHermitSpline();
+    //
+    //void placePointsForBezierSurface();
+    //void buildBezierSurface();
+
 private:
     void removeEdges();
     void removeSpline();
+    void removeHermitSpline();
+    void removeAll();
+    void redraw();
+    void placePoints(const std::vector<QPointF>& i_points);
 
 private:
     Ui::MainWindow *ui;
@@ -40,6 +50,9 @@ private:
     // scene items
     std::vector<std::unique_ptr<QGraphicsItem>> m_edges;
     std::vector<std::unique_ptr<QGraphicsItem>> m_bezier_spline;
+    std::vector<std::unique_ptr<QGraphicsItem>> m_hermit_spline;
+
+    std::vector<QPointF> m_points_for_Hermit_spline = {{100, 100}, {200, 200}, {400, 200}, {500, 300}, {600, 100}, {700, 200}, {800, 400}, {900, 400}, {1000, 300}};
 };
 
 #endif // MAINWINDOW_H
